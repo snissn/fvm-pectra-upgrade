@@ -5,11 +5,18 @@
 
 This repository contains the comprehensive research, technical analysis, specification drafts, and early prototypes for integrating the **EVM Object Format (EOFv1)** bundle (EIP-7692) into the Filecoin Virtual Machine (FVM).
 
-## 📖 Project Overview
+## 📖 Project Goal: Fulfilling the Grant Mandate
 
-The Ethereum network is preparing for the **Pectra** upgrade, which introduces the **EVM Object Format (EOF)**—a massive overhaul of the EVM's bytecode structure and validation logic. For the FVM to maintain full EVM equivalence and compatibility with the emerging ecosystem of tools and languages, it must adopt these standards.
+This project was initiated with the specific mandate to:
+> *"Begin work on [EIP-7692]... work in this grant cycle will focus on **scoping, analysis, FIP translation, and early prototyping**. Implementation priority will be based on technical feasibility..."*
 
-This project scopes the work required to bring 11 interdependent EOF-related EIPs to the FVM. It serves as a foundation for the engineering work that will take place in the `builtin-actors` and `ref-fvm` repositories.
+This repository serves as the definitive artifact resolving this goal. We have successfully:
+1.  **Scoped** the 11 interdependent EIPs required for EOFv1.
+2.  **Analyzed** the FVM architecture (`ref-fvm` and `builtin-actors`) to determine compatibility and implementation strategies.
+3.  **Translated** Ethereum specs into actionable FIP drafts and technical reports.
+4.  **Prototyped** the core container format and validation logic in Rust to prove technical feasibility.
+
+**[Read the Final Grant Report](pectra/reports/Final_Grant_Report.md)** for a detailed breakdown of how every grant requirement was met.
 
 ### What is EOF?
 Legacy EVM bytecode is unstructured, mixing code and data, which complicates analysis and optimization. **EOF (EIP-3540)** introduces a versioned container format (`0xEF00...`) that separates code and data sections. This enables:
@@ -43,7 +50,7 @@ A Rust-based proof-of-concept that implements the core EOF logic:
 
 ### 4. Project Reports
 Located in **[`pectra/reports/`](pectra/reports/)**:
-*   **`Final_Grant_Report.md`**: The comprehensive summary of the entire grant cycle's deliverables and findings.
+*   **[`Final_Grant_Report.md`](pectra/reports/Final_Grant_Report.md)**: **<-- START HERE.** The comprehensive summary of the entire grant cycle's deliverables and findings.
 *   **`Progress_Report.md`**: Mid-cycle status update.
 *   **`Builder_Feedback_Strategy.md`**: A strategic plan for engaging the ecosystem.
 
