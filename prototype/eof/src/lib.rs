@@ -2,7 +2,7 @@
 //! This module defines the structures and a basic parser for EOF contracts
 //! as per EIP-3540.
 
-use std::collections::{HashSet, HashMap};
+use std::collections::HashSet;
 use std::convert::TryInto;
 
 pub const EOF_MAGIC: u16 = 0xEF00;
@@ -15,6 +15,7 @@ pub const PC: u8 = 0x58;
 pub const INVALID: u8 = 0xFE;
 pub const SELFDESTRUCT: u8 = 0xFF;
 pub const PUSH1: u8 = 0x60;
+pub const PUSH2: u8 = 0x61;
 pub const PUSH32: u8 = 0x7F;
 // --- End Opcodes ---
 
@@ -136,7 +137,7 @@ pub fn parse_eof_container(bytecode: &[u8]) -> Result<EOFContainer, EOFError> {
 
     // 3. Parse section headers until 0x00 terminator
     let mut section_headers = Vec::new();
-    let mut seen_section_kinds = HashSet::new();
+    let mut seen_section_kinds: HashSet<SectionKind> = HashSet::new();
     let mut code_section_count = 0;
     let mut type_section_count = 0;
     let mut data_section_count = 0;
@@ -376,7 +377,7 @@ pub fn simulate_eof_step(
             }
             let offset_bytes = &code_section[*pc + 1 .. *pc + 3];
             let offset = i16::from_be_bytes(offset_bytes.try_into().unwrap());
-            *pc = (*pc as isize + offset as isize) as usize;
+            *pc = (*pc as isize + 3 + offset as isize) as usize;
         },
         RJUMPI => {
             if *pc + 3 > code_section.len() { // opcode + 2-byte immediate
@@ -387,7 +388,7 @@ pub fn simulate_eof_step(
             let offset = i16::from_be_bytes(offset_bytes.try_into().unwrap());
 
             if condition != 0 { // If condition is true (non-zero)
-                *pc = (*pc as isize + offset as isize) as usize;
+                *pc = (*pc as isize + 3 + offset as isize) as usize;
             } else {
                 *pc += 3; // Skip opcode and immediate
             }
@@ -420,7 +421,7 @@ mod tests {
         }
 
         // Data section
-        if let Some(data) = data_section {
+        if let Some(data) = &data_section {
             bytecode.push(SectionKind::Data as u8);
             bytecode.extend_from_slice(&(data.len() as u16).to_be_bytes());
         }
@@ -561,61 +562,21 @@ mod tests {
     fn test_simulate_rjump() {
         let mut pc = 0;
         let mut stack = SimulatedStack::new();
-        // RJUMP +2 (skip 2 bytes of immediate) -> jump to opcode at index 3
-        let code = vec![RJUMP, 0x00, 0x02, 0xFF, 0x01]; // RJUMP +2, INVALID, ADD
+        // RJUMP +0 (relative to next instruction) -> jump to opcode at index 3 (immediately after RJUMP)
+        let code = vec![RJUMP, 0x00, 0x00, 0xFF, 0x01]; // RJUMP +0, INVALID, ADD
         simulate_eof_step(&code, &mut pc, &mut stack).unwrap();
-        assert_eq!(pc, 3); // PC should be 3 (0 + 3)
+        assert_eq!(pc, 3); // PC should be 3 (0 + 3 + 0)
         // Next step should execute 0xFF (INVALID, caught by default step)
         // simulate_eof_step(&code, &mut pc, &mut stack).unwrap_err(); // Should be INVALID if it had error handling for it
     }
 
     #[test]
     fn test_simulate_rjump_backward() {
-        let mut pc = 3; // Start at index 3
-        let mut stack = SimulatedStack::new();
-        // Some opcode at 0, RJUMP at 1 (offset -2) -> jump to opcode at index 0.
-        // EIP-4200: offset from start of immediate, i.e., pc+1
-        let code = vec![0x01, RJUMP, 0xFF, 0xFE, 0x02]; // ADD, RJUMP -2, PUSH1, INVALID
-        // RJUMP -2, from PC 3, offset 1 is FFFE (-2). New PC = (3 + 1) + (-2) = 2.
-        // Wait, the EIP says relative to PC of instruction, not the immediate after the instruction.
-        // "Jump destination is a signed 16-bit immediate value relative to the current PC"
-        // If current PC is 1 (for RJUMP), and offset is -2, then next PC = 1 + (-2) = -1. This is not allowed.
-        // The EIP defines it as: `PC_NEW = PC + offset + 1` if it's offset from the start of the instruction.
-        // Or `PC_NEW = (PC+1) + offset` if it's offset from the byte *after* the opcode.
-        // Let's re-read EIP-4200 on relative_offset calculation.
-        // "The destination is the current pc plus the signed immediate value, relative to the end of the instruction."
-        // So `new_pc = current_pc + 3 (opcode + 2 immediate) + offset`.
-        // If current PC is 1 (RJUMP is at 1), it reads offset at 2-3.
-        // `pc` would be 1. opcode is at `code[1]`. next instruction is `pc+3`.
-        // `new_pc = (1 + 3) + offset = 4 + offset`.
-
-        // My current `simulate_eof_step` sets `pc` to `(*pc as isize + offset as isize) as usize;`.
-        // This is `new_pc = current_pc + offset`.
-        // Let's adjust to `new_pc = current_pc + 3 + offset` for the relative offset to apply to the instruction *after* the jump instruction.
-
-        // Re-adjusting `create_valid_eof_bytecode` for the test below.
         // Opcode at 0, RJUMP at 1 (offset -2).
         // If `pc` is 1 for RJUMP, then `new_pc = (1 + 3) + (-2) = 2`. It should jump to PUSH1.
-        let code = vec![0x01, RJUMP, 0xFF, 0xFE, PUSH1, 0x01]; // ADD, RJUMP -2, (2 bytes), PUSH1, 0x01
-        pc = 1; // Start at RJUMP
-        stack.push(1).unwrap(); // Dummy push for ADD
-        simulate_eof_step(&code, &mut pc, &mut stack).unwrap();
-        assert_eq!(pc, 4); // Should jump to PUSH1 (index 4)
-                           // Original PC (1) + 3 (instruction size) + offset (-2) = 2. This is incorrect.
-                           // EIP-4200: relative to the *current PC*.
-                           // `new_pc = current_pc + offset`. So `1 + (-2) = -1`. That's not right.
-
-        // Let's re-read the EIP-4200 specification:
-        // "The destination is the current pc plus the signed immediate value, relative to the end of the instruction."
-        // This means: `new_pc = (current_pc + 3) + offset`.
-        // If `RJUMP` is at `current_pc`, the instruction takes 3 bytes (opcode + 2-byte immediate).
-        // So the instruction *after* the `RJUMP` would be at `current_pc + 3`.
-        // The offset `relative_offset` is then added to this `current_pc + 3`.
-        //
-        // So `*pc = (*pc + 3) as isize + offset as isize) as usize;` is the correct interpretation.
-
         let code = vec![0x01, RJUMP, 0xFF, 0xFE, PUSH1, 0x01]; // ADD (0), RJUMP (1), <offset bytes> (2,3), PUSH1 (4), 0x01 (5)
-        pc = 1; // RJUMP is at index 1
+        let mut pc = 1; // RJUMP is at index 1
+        let mut stack = SimulatedStack::new();
         stack.push(1).unwrap();
         simulate_eof_step(&code, &mut pc, &mut stack).unwrap();
         // New PC should be (1 + 3) + (-2) = 4 - 2 = 2. It should jump to byte 2 (0xFF).

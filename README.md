@@ -7,7 +7,7 @@ This repository contains the comprehensive research, technical analysis, specifi
 
 ## 📄 Final Grant Report
 
-**[Download the Final Grant Report (PDF)](report.pdf)**
+**[Download the Final Grant Report (PDF)](https://raw.githubusercontent.com/snissn/fvm-pectra-upgrade/main/report.pdf)**
 
 This PDF is the definitive artifact for the "Pectra Phase 2" grant cycle. It includes:
 *   **Executive Summary**: How we met the grant mandate.

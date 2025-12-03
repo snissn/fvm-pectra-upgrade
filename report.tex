@@ -286,9 +286,16 @@ pub fn validate_eof_container(container: &EOFContainer) -> Result<(), EOFError> 
 \end{lstlisting}
 
 \subsection{Simulating Static Jumps}
-One of the most complex changes is the shift to relative jumps. Our prototype includes a step-function simulator that correctly calculates the target Program Counter (PC) based on the current PC and the signed 16-bit immediate value provided by the \texttt{RJUMP} instruction. This validated our understanding of the EIP-4200 arithmetic.
+One of the most complex changes is the shift to relative jumps. Our prototype includes a step-function simulator that correctly calculates the target Program Counter (PC) based on the current PC and the signed 16-bit immediate value provided by the \texttt{RJUMP} instruction. Note that EIP-4200 defines the offset relative to the \textit{end} of the instruction, requiring a \texttt{+3} adjustment in the calculation.
 
-\section{Conclusion}
+\begin{lstlisting}[language=Rust, caption=RJUMP Simulation]
+RJUMP => {
+    // ...
+    let offset = i16::from_be_bytes(offset_bytes.try_into().unwrap());
+    // Target PC = Current PC + 3 (instruction length) + offset
+    *pc = (*pc as isize + 3 + offset as isize) as usize;
+},
+\end{lstlisting}
 
 The "Pectra Phase 2" grant cycle has achieved its primary objectives. We have moved from a high-level understanding of EOFv1 to a granular, technically validated roadmap for FVM integration. 
 
