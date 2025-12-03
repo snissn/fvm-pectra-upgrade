@@ -5,6 +5,18 @@
 
 This repository contains the comprehensive research, technical analysis, specification drafts, and early prototypes for integrating the **EVM Object Format (EOFv1)** bundle (EIP-7692) into the Filecoin Virtual Machine (FVM).
 
+## 📄 Final Grant Report
+
+**[Download the Final Grant Report (PDF)](report.pdf)**
+
+This PDF is the definitive artifact for the "Pectra Phase 2" grant cycle. It includes:
+*   **Executive Summary**: How we met the grant mandate.
+*   **Technical Deep Dive**: Analysis of all 11 EIPs and their FVM divergences.
+*   **Implementation Roadmap**: Dependency graphs and critical path analysis.
+*   **Prototype Results**: Validation of the Rust-based parser and simulator.
+
+---
+
 ## 📖 Project Goal: Fulfilling the Grant Mandate
 
 This project was initiated with the specific mandate to:
@@ -15,8 +27,6 @@ This repository serves as the definitive artifact resolving this goal. We have s
 2.  **Analyzed** the FVM architecture (`ref-fvm` and `builtin-actors`) to determine compatibility and implementation strategies.
 3.  **Translated** Ethereum specs into actionable FIP drafts and technical reports.
 4.  **Prototyped** the core container format and validation logic in Rust to prove technical feasibility.
-
-**[Read the Final Grant Report](pectra/reports/Final_Grant_Report.md)** for a detailed breakdown of how every grant requirement was met.
 
 ### What is EOF?
 Legacy EVM bytecode is unstructured, mixing code and data, which complicates analysis and optimization. **EOF (EIP-3540)** introduces a versioned container format (`0xEF00...`) that separates code and data sections. This enables:
@@ -31,6 +41,8 @@ Legacy EVM bytecode is unstructured, mixing code and data, which complicates ana
 This repository is organized into research, specification, and engineering artifacts:
 
 ### 1. Research & Analysis
+*   **[`report.pdf`](report.pdf)**: The primary grant report.
+*   **[`report.tex`](report.tex)**: LaTeX source for the final report.
 *   **[`EIP_Analysis.md`](EIP_Analysis.md)**: A deep-dive technical summary of all 11 scoped EIPs, explaining their mechanics and impact.
 *   **[`EOF_Dependencies.md`](EOF_Dependencies.md)**: A dependency graph visualizing the optimal implementation order (Format -> Control Flow -> Validation -> Features).
 *   **[`GEMINI.md`](GEMINI.md)**: The project execution log and task tracker.
@@ -48,9 +60,9 @@ A Rust-based proof-of-concept that implements the core EOF logic:
 *   **Validation**: Implements **EIP-3670** validation rules, checking for forbidden opcodes (`INVALID`, `SELFDESTRUCT`, `JUMP`, `JUMPI`), PUSH data integrity, and section ordering.
 *   **Simulation**: Contains a basic step-function simulator for the new **EIP-4200** instructions (`RJUMP`, `RJUMPI`), demonstrating how relative offsets work.
 
-### 4. Project Reports
+### 4. Project Reports (Archives)
 Located in **[`pectra/reports/`](pectra/reports/)**:
-*   **[`Final_Grant_Report.md`](pectra/reports/Final_Grant_Report.md)**: **<-- START HERE.** The comprehensive summary of the entire grant cycle's deliverables and findings.
+*   **[`Final_Grant_Report.md`](pectra/reports/Final_Grant_Report.md)**: Markdown version of the final report.
 *   **`Progress_Report.md`**: Mid-cycle status update.
 *   **`Builder_Feedback_Strategy.md`**: A strategic plan for engaging the ecosystem.
 
