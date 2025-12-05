@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  5 DEC 2025 08:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  5 DEC 2025 08:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -894,36 +894,36 @@ Package hyperref Info: Link coloring ON on input line 94.
 \@outlinefile=\write4
 \openout4 = `report.out'.
 
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 9
-9.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 1
+03.
 
 (/usr/local/texlive/2025/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 9
-9.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 1
+03.
 
 (/usr/local/texlive/2025/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 
-99.
+103.
 
 (/usr/local/texlive/2025/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 
-99.
+103.
 
 (/usr/local/texlive/2025/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 99.
+(Font)              <12> on input line 103.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 99.
+(Font)              <8> on input line 103.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 99.
+(Font)              <6> on input line 103.
 
 
 [1
@@ -950,24 +950,24 @@ Package microtype Info: Loading generic protrusion settings for font family
 
 [2]
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1
-40.
+70.
  (/usr/local/texlive/2025/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 
 [3{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 194.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 224.
 
 
 [4]
-Overfull \hbox (4.8802pt too wide) in paragraph at lines 364--365
+Overfull \hbox (4.8802pt too wide) in paragraph at lines 394--395
 []\T1/lmr/m/n/10.95 (-20) Import the logic into \T1/lmtt/m/n/10.95 builtin-acto
 rs/actors/evm/src/interpreter/precompiles/
  []
 
 
-Overfull \hbox (31.93918pt too wide) in paragraph at lines 408--409
+Overfull \hbox (31.93918pt too wide) in paragraph at lines 438--439
 []\T1/lmr/bx/n/10.95 (-20) Modifications: \T1/lmr/m/n/10.95 (-20) Added \T1/lmt
 t/m/n/10.95 clz \T1/lmr/m/n/10.95 (-20) to \T1/lmtt/m/n/10.95 actors/evm/src/in
 terpreter/instructions/bitwise.rs\T1/lmr/m/n/10.95 (-20) . 
@@ -977,9 +977,9 @@ terpreter/instructions/bitwise.rs\T1/lmr/m/n/10.95 (-20) .
 
 [5]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 456.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 486.
 
-Overfull \hbox (101.99617pt too wide) in paragraph at lines 468--469
+Overfull \hbox (101.99617pt too wide) in paragraph at lines 498--499
 []\T1/lmr/bx/n/10.95 (-20) API De-sign (Drafted): \T1/lmr/m/n/10.95 (-20) De-fi
 ned \T1/lmtt/m/n/10.95 EthConfig \T1/lmr/m/n/10.95 (-20) struct in \T1/lmtt/m/n
 /10.95 lotus-eip7910/chain/types/ethtypes/eth_types.go\T1/lmr/m/n/10.95 (-20) .
@@ -999,11 +999,11 @@ Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: 5A8D472FEA16B28EBDF38304BB5B18BF;4175.
  ) 
 Here is how much of TeX's memory you used:
- 27155 strings out of 473190
- 506491 string characters out of 5715801
+ 27157 strings out of 473190
+ 506513 string characters out of 5715801
  956775 words of memory out of 5000000
  49819 multiletter control sequences out of 15000+600000
- 618386 words of font info for 126 fonts, out of 8000000 for 9000
+ 618469 words of font info for 127 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,12n,91p,1195b,751s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/lo
@@ -1013,7 +1013,7 @@ f-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2025/texmf-dist/font
 s/type1/public/lm/lmri10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/pu
 blic/lm/lmtk10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lm
 tt10.pfb>
-Output written on report.pdf (6 pages, 215848 bytes).
+Output written on report.pdf (6 pages, 215859 bytes).
 PDF statistics:
  212 PDF objects out of 1000 (max. 8388607)
  171 compressed objects within 2 object streams
