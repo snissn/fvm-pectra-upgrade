@@ -1,0 +1,502 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- Typography and Language ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+
+% --- Layout and Formatting ---
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\setlength{\headheight}{14pt}
+
+% --- Graphics and Diagrams ---
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric, arrows.meta, shadows, calc}
+
+% --- Tables and Lists ---
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{enumitem}
+
+% --- Code Highlighting ---
+\usepackage{listings}
+\usepackage{xcolor}
+
+% --- Colors ---
+\definecolor{primaryblue}{RGB}{0, 51, 102}
+\definecolor{accentblue}{RGB}{0, 102, 204}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.97,0.97,0.97}
+
+% --- Hyperlinks ---
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primaryblue,
+    filecolor=magenta,      
+    urlcolor=accentblue,
+    pdftitle={Fusaka Phase 2: FVM Integration Report},
+    pdfauthor={Germina Labs}
+}
+
+% --- Header/Footer Setup ---
+
+\pagestyle{fancy}
+
+\fancyhf{}
+
+\lhead{\textbf{Germina Labs}}
+
+\rhead{Fusaka Integration Grant Report}
+
+\cfoot{Page \thepage\ of \pageref{LastPage}}
+
+\renewcommand{\headrulewidth}{0.4pt}
+
+\renewcommand{\footrulewidth}{0.4pt}
+
+
+
+% --- Title Page Info ---
+
+\title{
+
+    \vspace{2cm}
+
+    \Huge\textbf{Fusaka: FVM Integration} \\
+
+    \vspace{0.5cm}
+
+    \Large Feasibility Analysis, Divergence Mapping \& Implementation Plan
+
+    \vspace{2cm}
+
+}
+
+\author{\textbf{Germina Labs}}
+
+\date{December 5, 2025}
+
+
+
+\begin{document}
+
+
+
+\maketitle
+
+\thispagestyle{empty}
+
+
+
+\begin{abstract}
+
+\noindent \textbf{Note:} "Fusaka" is the official codename for the Ethereum upgrade succeeding Pectra. It supersedes the scope previously identified as "Pectra Phase 2" in earlier Ethereum development roadmaps.
+
+
+
+This report outlines the results of the "Fusaka" investigation, aiming to align the Filecoin Virtual Machine (FVM) with Ethereum's upcoming Hard Fork. The upgrade focuses on scaling data availability (PeerDAS) and enhancing execution capabilities (secp256r1, CLZ). Our analysis concludes that while FVM should adopt the execution-layer improvements to maintain EVM equivalence for developers, the data availability and gas-layer changes are architecturally incompatible with Filecoin's native storage and metering models. We recommend implementing the three adopted features as \textbf{three separate Filecoin Improvement Proposals (FIPs)} to facilitate modular governance and activation.
+
+\end{abstract}
+
+
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+
+
+\section{Executive Summary}
+
+
+
+The "Fusaka" upgrade represents a significant divergence point for Ethereum, introducing complex consensus mechanisms for "Blob" sharding (PeerDAS). For the Filecoin Virtual Machine (FVM), which operates on a fundamentally different storage substrate, blind adoption of these EIPs is neither feasible nor desirable.
+
+
+
+However, Fusaka also introduces high-value application-layer features. The \textbf{secp256r1} precompile is essential for the next generation of consumer wallets (Passkeys), and the \textbf{Count Leading Zeros (CLZ)} opcode is required for compatibility with future Solidity compilers.
+
+
+
+Our "Phase 2" analysis has delivered:
+
+\begin{itemize}
+
+    \item \textbf{EIP Applicability Matrix}: A definitive guide on which Fusaka EIPs to Accept, Reject, or Mock.
+
+    \item \textbf{Architectural Specification}: A technical plan for implementing \texttt{secp256r1} in the \texttt{builtin-actors} Rust workspace.
+
+    \item \textbf{Client Integration Plan}: A design for the \texttt{eth\_config} RPC method in Lotus, enabling dynamic capability discovery.
+
+\end{itemize}
+
+
+
+We recommend eschewing a monolithic "Fusaka Bundle" FIP in favor of three targeted proposals covering the specific features relevant to Filecoin.
+
+
+
+\section{EIP Deep Dive \& Applicability Analysis}
+
+
+
+We performed a detailed technical analysis of each EIP in the Fusaka bundle. Below is the comprehensive breakdown of our findings and strategic decisions.
+
+
+
+\subsection{High-Priority Integrations (Adopt)}
+
+
+
+\subsubsection{EIP-7951: Precompile for secp256r1 Curve Support}
+
+\textbf{Summary:} Adds a precompiled contract at address \texttt{0x100} (tentative) to perform signature verification on the \texttt{secp256r1} (P-256) elliptic curve.
+
+
+
+\textbf{Analysis:} Currently, the EVM only natively supports \texttt{secp256k1}. However, the standard for hardware secure enclaves (Apple Secure Enclave, Android Keystore) and the WebAuthn/FIDO2 (Passkeys) standard relies on \texttt{secp256r1}. Supporting this precompile enables "Smart Accounts" on Filecoin to be controlled directly by a user's biometrics without an intermediate relayer or expensive off-chain ZK proofs.
+
+
+
+\textbf{Strategy:} \textbf{Implement as independent FIP.} This provides high direct value to the FVM DeFi and consumer ecosystem. We will implement this using the Rust \texttt{p256} crate within the \texttt{builtin-actors} layer.
+
+
+
+\subsubsection{EIP-7939: Count Leading Zeros (CLZ) Opcode}
+
+\textbf{Summary:} Introduces a \texttt{CLZ} instruction to the EVM.
+
+
+
+\textbf{Analysis:} This is a low-level efficiency upgrade. While trivial in isolation, its absence creates a "compiler trap." If the Solidity compiler (versions 0.8.28+) assumes the target chain supports \texttt{Fusaka}, it may emit \texttt{CLZ} for optimizations. If FVM lacks this opcode, standard contracts will crash.
+
+
+
+\textbf{Strategy:} \textbf{Implement as independent FIP.} Strict bytecode compatibility is non-negotiable for developer experience.
+
+
+
+\subsubsection{EIP-7910: \texttt{eth\_config} JSON-RPC Method}
+
+\textbf{Summary:} Adds a standard RPC method for clients to query chain capabilities.
+
+
+
+\textbf{Analysis:} As L2s and alternative L1s (like FVM) diverge from Ethereum Mainnet, wallets and developer tools need a way to discover what features are available. For example, FVM supports \texttt{secp256r1} but \textit{not} \texttt{Blob Transactions}. Without this RPC, tools have to guess via \texttt{chainId} maps, which is brittle.
+
+
+
+\textbf{Strategy:} \textbf{Implement as independent FIP.} We will add this to Lotus. It serves as the handshake protocol to inform connected clients that "PeerDAS is disabled" but "FVM features are active."
+
+
+
+\subsection{Rejections based on Gas \& Metering}
+
+
+
+\subsubsection{EIP-7883 \& EIP-7823: ModExp Gas Changes}
+
+\textbf{Summary:} These EIPs reprice the Modular Exponentiation precompile to match its actual computational cost on Ethereum clients.
+
+
+
+\textbf{FVM Reality:} The FVM ignores EVM Gas Tables entirely. When \texttt{MODEXP} is called on FVM, it executes a Rust function compiled to Wasm. The FVM Runtime meters the \textit{actual Wasm instructions executed}. If a ModExp operation takes 10x more CPU cycles, the FVM automatically charges 10x more Gas Units. We are inherently immune to the pricing mismatch that EIP-7883 fixes.
+
+
+
+\textbf{Strategy:} \textbf{Reject.} Adopting Ethereum's arbitrary gas formulas would be redundant and technically incorrect for our Wasm metering model.
+
+
+
+\subsubsection{EIP-7935 \& EIP-7825: Gas Limits}
+
+\textbf{Summary:} Increases the block gas limit and caps individual transaction gas usage.
+
+
+
+\textbf{FVM Reality:} Filecoin's throughput is governed by \texttt{Expected Consensus} and \texttt{Gas Units}. We have our own block limits (approx. 10B Gas Units) and our own "Tipset" mechanics.
+
+
+
+\textbf{Strategy:} \textbf{Reject.} We continue to use Filecoin's native network parameters.
+
+
+
+\subsection{Rejections based on Data Availability}
+
+
+
+\subsubsection{EIP-7594: PeerDAS (Blob Sampling)}
+
+\textbf{Summary:} Introduces a complex p2p sampling layer to verify that "Blobs" (ephemeral data attached to Type 3 transactions) are available without downloading them.
+
+
+
+\textbf{Analysis:} This solves the "Data Availability Problem" for Ethereum. Filecoin \textit{is} a storage network. We solve Data Availability with cryptographic \texttt{Proof-of-Replication} (PoRep) and \texttt{Proof-of-Spacetime} (PoSt). We do not need an ephemeral, 18-day blob layer; we have a permanent sector market.
+
+
+
+\textbf{Strategy:} \textbf{Reject entirely.} We will not implement the PeerDAS networking layer, and we will \textbf{reject} Type 3 transactions at the parser level (Status Quo). Tools attempting to send blobs to Filecoin should receive a clear error rather than a misleading success.
+
+
+
+\subsubsection{EIP-7918: Blob Base Fee}
+
+\textbf{Analysis:} This is market logic for the PeerDAS blob fee market. Since we are rejecting PeerDAS, this market does not exist on FVM.
+
+
+
+\textbf{Strategy:} \textbf{Reject.}
+
+
+
+\subsection{Other Rejections}
+
+
+
+\begin{itemize}
+
+    \item \textbf{EIP-7642: \texttt{eth/69} (Networking):} \textbf{Reject.} Filecoin uses \texttt{libp2p} with its own gossip protocols. We do not share the \texttt{devp2p} stack with Ethereum.
+
+    \item \textbf{EIP-7917: Deterministic Proposer Lookahead:} \textbf{Reject.} Specific to Ethereum's Beacon Chain. Filecoin uses \texttt{EC} (Expected Consensus) and VRF-based leader election.
+
+    \item \textbf{EIP-7934: RLP Execution Block Size Limit:} \textbf{Reject.} Filecoin uses IPLD (DAG-CBOR) for block headers and messages.
+
+\end{itemize}
+
+
+
+\section{Implementation Roadmap}
+
+
+
+
+
+
+
+The implementation is organized into three parallel workstreams, each corresponding to a specific FIP. This allows for independent development, testing, and activation.
+
+
+
+
+
+
+
+\begin{quote}
+
+
+
+\textbf{Note:} Due to the well-scoped nature of these individual components, we proceeded directly to implementation within the target repositories (\texttt{builtin-actors} and \texttt{lotus}), bypassing the need for throwaway standalone prototypes.
+
+
+
+\end{quote}
+
+
+
+
+
+
+
+\subsection{Workstream 1: EIP-7951 (secp256r1 Precompile)}
+
+
+
+\textbf{Goal:} Enable native Passkey verification on FVM.
+
+
+
+\begin{enumerate}
+
+
+
+    \item \textbf{Rust Implementation (Complete):} A full implementation has been developed in \texttt{builtin-actors-eip7951}.
+
+
+
+    \begin{itemize}
+
+
+
+        \item \textbf{Location:} \texttt{actors/evm/src/interpreter/precompiles/secp256r1.rs}
+
+
+
+        \item \textbf{Logic:} Uses the \texttt{p256} crate to implement \texttt{verify\_impl}, taking 160 bytes of input (hash, r, s, x, y) and returning a boolean.
+
+
+
+        \item \textbf{Address:} Registered at \texttt{0x00..0100} (aligned with RIP-7212).
+
+
+
+        \item \textbf{Status:} Code reviewed and unit tests with vectors from \texttt{daimo-eth/p256-verifier} passed.
+
+
+
+    \end{itemize}
+
+
+
+    \item \textbf{Actor Integration:}
+
+
+
+    \begin{itemize}
+
+
+
+        \item Import the logic into \texttt{builtin-actors/actors/evm/src/interpreter/precompiles/} (Done).
+
+
+
+        \item Register the new precompile address (e.g., \texttt{0x100}) (Done).
+
+
+
+    \end{itemize}
+
+
+
+    \item \textbf{Specification:} Deliver \textbf{FIP-X: secp256r1 Precompile} describing the gas costs (Wasm metering) and API.
+
+
+
+\end{enumerate}
+
+
+
+
+
+
+
+\subsection{Workstream 2: EIP-7939 (CLZ Opcode)}
+
+
+
+\textbf{Goal:} Maintain compiler compatibility with Solidity 0.8.28+.
+
+
+
+\begin{enumerate}
+
+
+
+    \item \textbf{Rust Implementation (Complete):} Implemented in \texttt{builtin-actors-eip7939}.
+
+
+
+    \begin{itemize}
+
+
+
+        \item \textbf{Modifications:} Added \texttt{clz} to \texttt{actors/evm/src/interpreter/instructions/bitwise.rs}.
+
+
+
+        \item \textbf{Registration:} Registered opcode \texttt{0xf6} in \texttt{execution.rs} and \texttt{instructions/mod.rs}.
+
+
+
+        \item \textbf{Testing:} Added unit tests for the new instruction.
+
+
+
+    \end{itemize}
+
+
+
+    \item \textbf{Actor Integration:}
+
+
+
+    \begin{itemize}
+
+
+
+        \item Update \texttt{builtin-actors/actors/evm/src/interpreter/execution.rs} to include the new opcode \texttt{0xf6} (Done).
+
+
+
+        \item Map the instruction to the Rust \texttt{u256.leading\_zeros()} method (Done).
+
+
+
+    \end{itemize}
+
+
+
+    \item \textbf{Specification:} Deliver \textbf{FIP-Y: CLZ Opcode} detailing the instruction behavior.
+
+
+
+\end{enumerate}
+
+
+
+
+
+
+
+\subsection{Workstream 3: EIP-7910 (\texttt{eth\_config} RPC)}
+
+
+
+\textbf{Goal:} Enable dynamic capability discovery for wallets and tools.
+
+
+
+\begin{enumerate}
+
+
+
+    \item \textbf{API Design (Drafted):} Defined \texttt{EthConfig} struct in \texttt{lotus-eip7910/chain/types/ethtypes/eth\_types.go}.
+
+
+
+    \item \textbf{Lotus Integration (Drafted):}
+
+
+
+    \begin{itemize}
+
+
+
+        \item Added \texttt{EthConfigAPI} interface to \texttt{lotus-eip7910/node/impl/eth/api.go}.
+
+
+
+        \item Defined fields: \texttt{chainId}, \texttt{peerDAS}, \texttt{fvm}.
+
+
+
+    \end{itemize}
+
+
+
+    \item \textbf{Specification:} Deliver \textbf{FIP-Z: eth\_config RPC Method} standardizing the response format for all Filecoin implementations.
+
+
+
+\end{enumerate}
+
+\section{Conclusion}
+
+The "Fusaka" upgrade presents a streamlined opportunity for the FVM. By focusing strictly on the application-layer features (\texttt{CLZ}, \texttt{secp256r1}) and rejecting the consensus-layer complexities (PeerDAS, Gas), we can deliver a high-value upgrade with reduced engineering risk. The plan is now set for execution.
+
+\end{document}
