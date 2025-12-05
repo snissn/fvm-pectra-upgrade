@@ -1,0 +1,16 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Executive Summary}{3}{section.1}%
+\contentsline {section}{\numberline {2}Introduction \& Strategic Context}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}The Problem with Legacy EVM Bytecode}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}The Solution: EOFv1}{3}{subsection.2.2}%
+\contentsline {section}{\numberline {3}Technical Analysis}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}The EOFv1 Bundle (EIP-7692)}{4}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}Core Container Format (EIP-3540 \& EIP-3670)}{4}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}Static Control Flow (EIP-4200, EIP-4750, EIP-6206)}{4}{subsubsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.3}Stack Safety \& Data Access (EIP-5450 \& EIP-7480)}{4}{subsubsection.3.1.3}%
+\contentsline {subsection}{\numberline {3.2}FVM Integration \& Divergences}{4}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Implementation Roadmap}{5}{section.4}%
+\contentsline {section}{\numberline {5}Early Prototyping Results}{5}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Parsing the Container}{6}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Validating the Code}{6}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Simulating Static Jumps}{6}{subsection.5.3}%

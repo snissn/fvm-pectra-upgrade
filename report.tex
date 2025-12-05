@@ -104,7 +104,7 @@
 % --- Title Page Info ---
 \title{
     \vspace{2cm}
-    \Huge\textbf{Pectra Phase 2: EOFv1 Integration} \\
+    \Huge\textbf{Fusaka: EOFv1 Integration} \\
     \vspace{0.5cm}
     \Large Filecoin Virtual Machine (FVM) Compatibility \& Prototype Analysis
     \vspace{2cm}
@@ -117,8 +117,12 @@
 \maketitle
 \thispagestyle{empty}
 
+\begin{quote}
+\textbf{Note:} "Fusaka" is the official codename for the Ethereum upgrade succeeding Pectra. It supersedes the scope previously identified as "Pectra Phase 2" in earlier Ethereum development roadmaps. This report, originally commissioned under the "Pectra Phase 2" title, documents the work now relevant to the Fusaka upgrade.
+\end{quote}
+
 \begin{abstract}
-\noindent This comprehensive report documents the findings of the "Pectra Phase 2" grant cycle, focused on the integration of the Ethereum EVM Object Format (EOFv1) into the Filecoin Virtual Machine (FVM). As Ethereum transitions away from legacy bytecode to a structured, versioned format, the FVM must adapt to maintain equivalence and interoperability. This document details our deep technical analysis of the 11 constituent EIPs, identifies critical architectural divergences between the EVM and FVM, and presents the results of our Rust-based prototyping efforts. We conclude that while the integration requires significant updates to the \texttt{builtin-actors} layer, specifically within the EVM actor, it is technically feasible and offers substantial long-term benefits for contract safety and execution efficiency on Filecoin.
+\noindent This comprehensive report documents the findings of the grant cycle focused on the integration of the Ethereum EVM Object Format (EOFv1) into the Filecoin Virtual Machine (FVM). Originally targeted as "Pectra Phase 2", this upgrade is now the core of the **Fusaka** hard fork. As Ethereum transitions away from legacy bytecode to a structured, versioned format, the FVM must adapt to maintain equivalence and interoperability. This document details our deep technical analysis of the 11 constituent EIPs, identifies critical architectural divergences between the EVM and FVM, and presents the results of our Rust-based prototyping efforts. We conclude that while the integration requires significant updates to the \texttt{builtin-actors} layer, specifically within the EVM actor, it is technically feasible and offers substantial long-term benefits for contract safety and execution efficiency on Filecoin.
 \end{abstract}
 
 \newpage
