@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  9 DEC 2025 16:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  9 DEC 2025 16:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**reports/report.tex
-(./reports/report.tex
+**report.tex
+(./report.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (/usr/local/texlive/2025/texmf-dist/tex/latex/base/article.cls
@@ -788,7 +788,7 @@ File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count336
 \l__pdf_internal_box=\box73
 )
-(reports/report.aux)
+(./report.aux)
 \openout1 = `report.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 94.
@@ -890,7 +890,7 @@ e
 \c@lstlisting=\count343
 Package hyperref Info: Link coloring ON on input line 94.
 
-(reports/report.out) (reports/report.out)
+(./report.out) (./report.out)
 \@outlinefile=\write4
 \openout4 = `report.out'.
 
@@ -929,11 +929,12 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 [1
 
 {/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/loc
-al/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}] (reports/report.toc
+al/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}] (./report.toc
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <10.95> on input line 4.
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 7
 .
+
 (/usr/local/texlive/2025/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
@@ -989,7 +990,7 @@ ned \T1/lmtt/m/n/10.95 EthConfig \T1/lmr/m/n/10.95 (-20) struct in \T1/lmtt/m/n
 
 [6] 
 enddocument/afterlastpage (AED): lastpage setting LastPage.
-(reports/report.aux)
+(./report.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -998,13 +999,13 @@ Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: 5A8D472FEA16B28EBDF38304BB5B18BF;4175.
  ) 
 Here is how much of TeX's memory you used:
- 27160 strings out of 473190
- 506647 string characters out of 5715801
+ 27159 strings out of 473190
+ 506537 string characters out of 5715801
  956775 words of memory out of 5000000
  49819 multiletter control sequences out of 15000+600000
  618552 words of font info for 128 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,12n,91p,1203b,751s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,12n,91p,1195b,751s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/lo
 cal/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texliv
 e/2025/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2025/texm
@@ -1012,7 +1013,7 @@ f-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2025/texmf-dist/font
 s/type1/public/lm/lmri10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/pu
 blic/lm/lmtk10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lm
 tt10.pfb>
-Output written on reports/report.pdf (6 pages, 215883 bytes).
+Output written on report.pdf (6 pages, 215883 bytes).
 PDF statistics:
  212 PDF objects out of 1000 (max. 8388607)
  171 compressed objects within 2 object streams
