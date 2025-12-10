@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-The "Fusaka" upgrade (Ethereum's upcoming Hard Fork) introduces critical features for scalability (PeerDAS) and user experience (Passkeys/secp256r1). This grant cycle focused on analyzing the applicability of these changes to the Filecoin Virtual Machine (FVM) and scoping the necessary integration work.
+The "Fusaka" upgrade (Ethereum's recent Hard Fork, activated Dec 3rd, 2025) introduces critical features for scalability (PeerDAS) and user experience (Passkeys/secp256r1). This grant cycle focused on analyzing the applicability of these changes to the Filecoin Virtual Machine (FVM) and scoping the necessary integration work.
 
 Our findings indicate that the FVM must adopt a subset of Fusaka EIPs to maintain "EVM Equivalence" for developers and users, specifically the **secp256r1 precompile** (for Passkeys) and the **CLZ opcode** (for compiler compatibility).
 
